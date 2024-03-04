@@ -1,7 +1,7 @@
 ---
 layout: Post
-permalink: /listas
-title: Lista de listas
+permalink: /lists
+title: List of Lists
 feedformat: row
 ---
 

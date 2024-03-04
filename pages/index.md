@@ -4,5 +4,5 @@
 
 layout: Post
 permalink: /
-title: juanalbglz.work
+title: Jekyll Garden
 ---
