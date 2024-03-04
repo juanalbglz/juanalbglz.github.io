@@ -27,11 +27,11 @@ baseurl: ""
 
 # Website Header, Description, Footer year and text. 
 # If you are deleting this, make sure you remove it from HTML files too 
-heading: Jekyll Garden # Change this 
-content: Obsidian ready Jekyll Theme
+heading: juanalbglz.work # Change this 
+content: Ideas, pensamientos y proyectos
 copyright:  
   year: © 2022
-  msg: Contents under CC-BY-NC 
+  msg: CC-BY-NC 
 
 # Set title and content for private & broken link tooltop
 privatelinks:
@@ -66,9 +66,12 @@ plugins:
 ## Enable Collections
 ## Suggested collects are "notes" "lists" and "blog"
 collections:
-    notes:
+    notas:
       output: true
-      permalink: /note/:title
+      permalink: /nota/:title
+    listas:
+      output: true
+      permalink: /lista/:title
 
 markdown: kramdown
 
@@ -107,9 +110,9 @@ defaults:
 # their entries' file path in the `include:` list.
 #
 exclude:
-  - _notes/000 Inbox
-  - _notes/200 Private
-  - _notes/300 Templates
+  - _notas/000 Inbox
+  - _notas/200 Private
+  - _notas/300 Templates
 #   - .sass-cache/
 #   - .jekyll-cache/
 #   - gemfiles/
