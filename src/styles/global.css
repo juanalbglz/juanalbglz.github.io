@@ -81,3 +81,27 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 3rem 0; }
 footer.site { font-family: var(--sans); font-size: .85rem; color: var(--muted); border-top: 1px solid var(--rule); }
 footer.site .wrap { padding-block: 2rem; display: grid; gap: .4rem; }
 footer.site a { color: var(--muted); }
+
+.works { list-style: none; padding: 0; margin: 0; }
+.works li { display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--rule); }
+.works li:last-child { border-bottom: 1px solid var(--rule); }
+.works .year { font-family: var(--sans); font-size: .85rem; color: var(--accent); padding-top: .3rem; font-variant-numeric: tabular-nums; }
+.works h3 { font-size: 1.15rem; margin: 0; }
+.works .meta { margin: .1rem 0 0; }
+.works p:last-child { margin: .4rem 0 0; }
+@media (max-width: 30rem) {
+  .works li { grid-template-columns: 1fr; gap: .2rem; }
+}
+
+.contact { display: grid; gap: .9rem; margin: 1rem 0; font-family: var(--sans); font-size: .95rem; }
+.contact label { display: grid; gap: .3rem; }
+.contact input, .contact textarea {
+  font: inherit; font-size: 1rem; color: var(--text); background: var(--bg);
+  border: 1px solid var(--rule); border-radius: 4px; padding: .6rem .7rem;
+}
+.contact textarea { resize: vertical; }
+.contact button {
+  justify-self: start; font: inherit; font-weight: 600; cursor: pointer;
+  background: var(--accent); color: var(--bg); border: 0; border-radius: 4px; padding: .6rem 1.4rem;
+}
+.contact .trap { position: absolute; left: -9999px; }

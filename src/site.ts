@@ -4,8 +4,8 @@ export const SITE = {
   handle: 'juanalbglz',
   mastodon: 'https://mastodon.art/@juanalbglz',
   mastodonHandle: '@juanalbglz@mastodon.art',
-  // Pon aquí la dirección de contacto (se muestra como enlace mailto).
-  email: '',
+  // URL del buzón PHP del formulario (ver servidor/README.md). Vacío = sin formulario.
+  contactEndpoint: '',
   license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
 };
 
@@ -19,9 +19,9 @@ export const UI = {
     rss: '/rss.xml',
     other: { lang: 'en' as Lang, label: 'English', href: '/en/' },
     nav: { home: 'Inicio', blog: 'Blog', contact: 'Contacto' },
-    tagline: 'Explorando márgenes invisibles',
+    tagline: 'Arte relacional, educación y territorio',
     description:
-      'Juan González trabaja en sostenibilidad, patrimonio cultural, ecosistemas digitales y pensamiento decolonial, con una mirada crítica al trabajo invisible y la mercantilización del territorio en las periferias europeas.',
+      'Juan Alberto González, graduado en Bellas Artes en Tenerife. Arte relacional, mediación cultural y educación ambiental con mirada crítica sobre el territorio.',
     blogTitle: 'Blog',
     blogIntro: 'Notas, ensayos y apuntes de trabajo.',
     latest: 'Últimas entradas',
@@ -39,9 +39,9 @@ export const UI = {
     rss: '/en/rss.xml',
     other: { lang: 'es' as Lang, label: 'Español', href: '/' },
     nav: { home: 'Home', blog: 'Blog', contact: 'Contact' },
-    tagline: 'Exploring invisible margins',
+    tagline: 'Relational art, education and territory',
     description:
-      'Juan González works on sustainability, cultural heritage, digital ecosystems and decolonial thought, with a critical eye on invisible labour and the commodification of territory in Europe’s peripheries.',
+      'Juan Alberto González, Fine Arts graduate based in Tenerife. Relational art, cultural mediation and environmental education with a critical eye on territory.',
     blogTitle: 'Blog',
     blogIntro: 'Notes, essays and working drafts.',
     latest: 'Latest posts',
