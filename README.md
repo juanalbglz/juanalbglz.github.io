@@ -24,7 +24,7 @@ Web personal de Juan González, con blog en español e inglés. Sitio estático 
 
 ## Cambiar textos y enlaces
 
-- Enlaces (Mastodon, email de contacto, CSA2): `src/site.ts`.
+- Enlaces (Mastodon, email de contacto): `src/site.ts`.
 - Textos de la portada: `src/components/Home.astro`.
 - Colores y tipografía: `src/styles/global.css`.
 

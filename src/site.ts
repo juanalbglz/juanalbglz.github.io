@@ -6,8 +6,6 @@ export const SITE = {
   mastodonHandle: '@juanalbglz@mastodon.art',
   // Pon aquí la dirección de contacto (se muestra como enlace mailto).
   email: '',
-  // Pon aquí el enlace al proyecto CSA2 cuando lo tengas.
-  csa2: '',
   license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
 };
 
