@@ -64,4 +64,69 @@ $cabeceras = implode("\r\n", array(
   'Content-Type: text/plain; charset=utf-8',
 ));
 
-volver($c, $lang, @mail($c['destino'], $asunto, $cuerpo, $cabeceras) ? 'ok' : 'envio');
+// Con datos SMTP en la configuración, se envía autenticado desde un buzón real.
+// Sin ellos, se usa mail() del servidor (a menudo acaba en spam).
+$enviado = !empty($c['smtp']['servidor'])
+  ? enviar_smtp($c['smtp'], $c['remitente'], $c['destino'], $correo, $asunto, $cuerpo)
+  : @mail($c['destino'], $asunto, $cuerpo, $cabeceras);
+volver($c, $lang, $enviado ? 'ok' : 'envio');
+
+// Cliente SMTP mínimo: SSL (puerto 465) o STARTTLS (587) y AUTH LOGIN.
+function enviar_smtp($s, $de, $para, $responder, $asunto, $cuerpo) {
+  $puerto = isset($s['puerto']) ? (int) $s['puerto'] : 465;
+  $host = ($puerto === 465 ? 'ssl://' : 'tcp://') . $s['servidor'] . ':' . $puerto;
+  // Algunos hostings usan un certificado a nombre del servidor y no del dominio:
+  // en ese caso, pon 'verificar_certificado' => false en la configuración.
+  $verificar = !isset($s['verificar_certificado']) || $s['verificar_certificado'];
+  $ctx = stream_context_create(array('ssl' => array('verify_peer' => $verificar, 'verify_peer_name' => $verificar)));
+  $f = @stream_socket_client($host, $errno, $errstr, 15, STREAM_CLIENT_CONNECT, $ctx);
+  if (!$f) return smtp_fallo("conexión: $errstr");
+  stream_set_timeout($f, 15);
+  $leer = function () use ($f) {
+    $r = '';
+    while (($l = fgets($f, 515)) !== false) { $r .= $l; if (isset($l[3]) && $l[3] === ' ') break; }
+    return $r;
+  };
+  $orden = function ($cmd, $esperado) use ($f, $leer) {
+    if ($cmd !== null) fwrite($f, $cmd . "\r\n");
+    $r = $leer();
+    return strpos($r, (string) $esperado) === 0 ? true : $r;
+  };
+  $yo = 'buzon.juanalbglz.eu';
+  if (($r = $orden(null, 220)) !== true) return smtp_fallo($r);
+  if (($r = $orden("EHLO $yo", 250)) !== true) return smtp_fallo($r);
+  if ($puerto !== 465) {
+    if (($r = $orden('STARTTLS', 220)) !== true) return smtp_fallo($r);
+    if (!stream_socket_enable_crypto($f, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) return smtp_fallo('TLS');
+    if (($r = $orden("EHLO $yo", 250)) !== true) return smtp_fallo($r);
+  }
+  if (($r = $orden('AUTH LOGIN', 334)) !== true) return smtp_fallo($r);
+  if (($r = $orden(base64_encode($s['usuario']), 334)) !== true) return smtp_fallo($r);
+  if (($r = $orden(base64_encode($s['clave']), 235)) !== true) return smtp_fallo('autenticación rechazada');
+  if (($r = $orden("MAIL FROM:<$de>", 250)) !== true) return smtp_fallo($r);
+  if (($r = $orden("RCPT TO:<$para>", 250)) !== true) return smtp_fallo($r);
+  if (($r = $orden('DATA', 354)) !== true) return smtp_fallo($r);
+  $datos = implode("\r\n", array(
+    'Date: ' . date('r'),
+    "From: juanalbglz.eu <$de>",
+    "To: <$para>",
+    "Reply-To: <$responder>",
+    "Subject: $asunto",
+    'Message-ID: <' . bin2hex(random_bytes(12)) . "@$yo>",
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=utf-8',
+    'Content-Transfer-Encoding: base64',
+    '',
+    chunk_split(base64_encode($cuerpo)),
+  ));
+  if (($r = $orden($datos . "\r\n.", 250)) !== true) return smtp_fallo($r);
+  $orden('QUIT', 221);
+  fclose($f);
+  return true;
+}
+
+// Deja el motivo en el registro de errores de PHP del hosting, nunca en la página.
+function smtp_fallo($motivo) {
+  error_log('contacto.php SMTP: ' . trim($motivo));
+  return false;
+}

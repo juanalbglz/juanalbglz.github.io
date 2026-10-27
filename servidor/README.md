@@ -10,7 +10,7 @@ GitHub Pages solo sirve archivos estáticos, así que el formulario envía los m
 4. En el DNS del dominio, apunta `buzon` al hosting (el registro que te indique).
 5. En `src/site.ts`, pon `contactEndpoint: 'https://buzon.juanalbglz.eu/contacto.php'`. Mientras esté vacío, la web no muestra el formulario.
 
-Requisitos: PHP 7.0 o superior con `mail()` activo. Si da error 500, mira el registro de errores de PHP del hosting.
+Requisitos: PHP 7.0 o superior. Recomendado: rellenar el bloque `smtp` con un buzón real del hosting para que los mensajes salgan autenticados; con `mail()` suelen acabar en spam. Si algo falla, el motivo queda en el registro de errores de PHP del hosting.
 
 ## Qué hace
 
