@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE, UI, type Lang } from '../site';
+import { HOME } from '../home';
+import { getPosts, slugOf, formatDate } from '../posts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = UI[lang];
+const h = HOME[lang];
+const latest = (await getPosts(lang)).slice(0, 3);
+const es = lang === 'es';
+// *cursiva* en los textos de home.ts
+const em = (s: string) => s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+---
+<Base lang={lang} current="home">
+  <p class="eyebrow">{h.eyebrow}</p>
+  <h1>{h.title}</h1>
+  <p class="lede">{h.lede}</p>
+
+  <h2>{h.about.title}</h2>
+  {h.about.body.map((p) => <p set:html={em(p)} />)}
+
+  <h2>{h.works.title}</h2>
+  <ul class="works">
+    {h.works.items.map((w) => (
+      <li>
+        <span class="year">{w.year}</span>
+        <div>
+          <h3>{w.title}</h3>
+          {w.where && <p class="meta">{w.where}</p>}
+          <p>{w.text}</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <h2>{h.education.title}</h2>
+  <ul class="works">
+    {h.education.items.map((w) => (
+      <li>
+        <span class="year">{w.year}</span>
+        <div>
+          <h3>{w.title}</h3>
+          {w.where && <p class="meta">{w.where}</p>}
+          <p>{w.text}</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <h2>{t.latest}</h2>
+  {latest.length === 0 ? <p class="meta">{t.noPosts}</p> : (
+    <ul class="posts">
+      {latest.map((p) => (
+        <li>
+          <a class="title" href={`${t.blog}${slugOf(p.id)}/`}>{p.data.title}</a>
+          <div class="meta"><time datetime={p.data.date.toISOString()}>{formatDate(p.data.date, t.dateLocale)}</time></div>
+          <p>{p.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  )}
+  <p><a href={t.blog}>{t.allPosts} →</a></p>
+
+  <h2 id="contacto">{es ? 'Contacto y colaboraciones' : 'Get in touch'}</h2>
+  <div class="card">
+    <p>
+      {es
+        ? 'Si quieres colaborar, proponer un taller o simplemente conversar, escríbeme.'
+        : 'If you would like to collaborate, suggest a workshop or simply talk, write to me.'}
+    </p>
+    {SITE.contactEndpoint && (
+      <form class="contact" method="post" action={SITE.contactEndpoint}>
+        <input type="hidden" name="lang" value={lang} />
+        <label>{es ? 'Nombre' : 'Name'}<input name="nombre" required maxlength="100" autocomplete="name" /></label>
+        <label>{es ? 'Tu correo' : 'Your email'}<input name="correo" type="email" required maxlength="200" autocomplete="email" /></label>
+        <label>{es ? 'Mensaje' : 'Message'}<textarea name="mensaje" required maxlength="5000" rows="6"></textarea></label>
+        <label class="trap" aria-hidden="true">Web<input name="web" tabindex="-1" autocomplete="off" /></label>
+        <p class="meta">
+          {es
+            ? 'Tu mensaje me llega por correo y solo lo uso para responderte. No se guarda en ninguna base de datos.'
+            : 'Your message reaches me by email and I only use it to reply. It is not stored in any database.'}
+        </p>
+        <button type="submit">{es ? 'Enviar' : 'Send'}</button>
+      </form>
+    )}
+    <p>
+      {es ? 'También en Mastodon:' : 'Also on Mastodon:'} <a href={SITE.mastodon} rel="me">{SITE.mastodonHandle}</a>
+    </p>
+  </div>
+</Base>

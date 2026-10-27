@@ -1,0 +1,30 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { UI, type Lang } from '../site';
+import { formatDate } from '../posts';
+
+interface Props { lang: Lang; post: CollectionEntry<'blog'> }
+const { lang, post } = Astro.props;
+const t = UI[lang];
+const { Content } = await render(post);
+const { title, description, date, updated, tags, translation } = post.data;
+const alternate = translation ? `${UI[t.other.lang].blog}${translation}/` : UI[t.other.lang].blog;
+---
+<Base lang={lang} title={title} description={description} current="blog" alternate={alternate}>
+  <article>
+    <p class="meta">
+      <time datetime={date.toISOString()}>{formatDate(date, t.dateLocale)}</time>
+      {updated && <> · {lang === 'es' ? 'actualizado' : 'updated'} {formatDate(updated, t.dateLocale)}</>}
+      {tags.length > 0 && <> · {tags.join(', ')}</>}
+    </p>
+    <h1>{title}</h1>
+    <p class="lede">{description}</p>
+    <div class="prose"><Content /></div>
+  </article>
+  <hr />
+  <p class="meta">
+    <a href={t.blog}>{t.back}</a>
+    {translation && <> · <a href={alternate} hreflang={t.other.lang}>{t.readIn}</a></>}
+  </p>
+</Base>

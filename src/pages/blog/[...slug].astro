@@ -1,0 +1,9 @@
+---
+import Post from '../../components/Post.astro';
+import { getPosts, slugOf } from '../../posts';
+
+export async function getStaticPaths() {
+  return (await getPosts('es')).map((post) => ({ params: { slug: slugOf(post.id) }, props: { post } }));
+}
+---
+<Post lang="es" post={Astro.props.post} />

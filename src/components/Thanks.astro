@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import { UI, type Lang } from '../site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = UI[lang];
+const es = lang === 'es';
+const errors = es
+  ? { datos: 'Falta algún dato o el correo no es válido.', limite: 'Has enviado demasiados mensajes seguidos. Prueba dentro de una hora.', origen: 'El envío no salió de esta web.', envio: 'No se pudo enviar el mensaje. Prueba más tarde o escríbeme por Mastodon.' }
+  : { datos: 'Something is missing or the email address is not valid.', limite: 'Too many messages in a row. Please try again in an hour.', origen: 'The message did not come from this site.', envio: 'The message could not be sent. Try again later or write to me on Mastodon.' };
+---
+<Base lang={lang} title={es ? 'Gracias' : 'Thank you'} alternate={UI[t.other.lang].home + (es ? 'thanks/' : 'gracias/')}>
+  <div id="ok">
+    <h1>{es ? 'Mensaje enviado' : 'Message sent'}</h1>
+    <p class="lede">{es ? 'Gracias por escribirme. Te responderé lo antes posible.' : 'Thanks for writing. I will get back to you as soon as I can.'}</p>
+  </div>
+  <div id="ko" hidden>
+    <h1>{es ? 'No se ha enviado' : 'Not sent'}</h1>
+    <p class="lede" id="ko-text"></p>
+  </div>
+  <p><a href={`${t.home}#contacto`}>{es ? '← Volver' : '← Back'}</a></p>
+  <script define:vars={{ errors }}>
+    const code = new URLSearchParams(location.search).get('error');
+    if (code) {
+      document.getElementById('ok').hidden = true;
+      document.getElementById('ko').hidden = false;
+      document.getElementById('ko-text').textContent = errors[code] || errors.envio;
+    }
+  </script>
+</Base>
