@@ -18,7 +18,7 @@ const alternate = translation ? `${UI[t.other.lang].blog}${translation}/` : UI[t
       {updated && <> · {lang === 'es' ? 'actualizado' : 'updated'} {formatDate(updated, t.dateLocale)}</>}
       {tags.length > 0 && <> · {tags.join(', ')}</>}
     </p>
-    <h1>{title}</h1>
+    <h1 class="ink">{title}</h1>
     <p class="lede">{description}</p>
     <div class="prose"><Content /></div>
   </article>

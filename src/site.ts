@@ -1,6 +1,6 @@
 // Datos del sitio. Cambia aquí los enlaces y se actualizan en todas las páginas.
 export const SITE = {
-  name: 'Juan González',
+  name: 'Juan Alberto González',
   handle: 'juanalbglz',
   mastodon: 'https://mastodon.art/@juanalbglz',
   mastodonHandle: '@juanalbglz@mastodon.art',

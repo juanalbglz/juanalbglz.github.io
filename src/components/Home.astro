@@ -14,13 +14,19 @@ const es = lang === 'es';
 const em = (s: string) => s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
 ---
 <Base lang={lang} current="home">
-  <p class="eyebrow">{h.eyebrow}</p>
-  <h1>{h.title}</h1>
-  <p class="lede">{h.lede}</p>
+  <section class="hero ink-soft">
+    <span class="stamp">{h.stamp}</span>
+    <p class="eyebrow">{h.eyebrow}</p>
+    <h1 class="ink" set:html={em(h.title)} />
+    <p class="lede">{h.lede}</p>
+  </section>
 
+  <div class="cols">
+  <div>
   <h2>{h.about.title}</h2>
   {h.about.body.map((p) => <p set:html={em(p)} />)}
-
+  </div>
+  <div>
   <h2>{h.works.title}</h2>
   <ul class="works">
     {h.works.items.map((w) => (
@@ -34,6 +40,9 @@ const em = (s: string) => s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
       </li>
     ))}
   </ul>
+
+  </div>
+  </div>
 
   <h2>{h.education.title}</h2>
   <ul class="works">
