@@ -35,10 +35,15 @@ const otherHref = alternate ?? t.other.href;
     <meta property="og:description" content={desc} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_GB'} />
-    <meta name="theme-color" content="#f6f1e7" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1b1917" media="(prefers-color-scheme: dark)" />
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#efe6d2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#151311" media="(prefers-color-scheme: dark)" />
   </head>
   <body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <filter id="tinta"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="3" seed="7" result="t" /><feDisplacementMap in="SourceGraphic" in2="t" scale="4" /></filter>
+      <filter id="tinta-suave"><feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="3" result="t" /><feDisplacementMap in="SourceGraphic" in2="t" scale="5" /></filter>
+    </svg>
     <a class="skip" href="#main">{lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}</a>
     <header class="site">
       <div class="wrap">

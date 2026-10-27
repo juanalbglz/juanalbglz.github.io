@@ -5,6 +5,7 @@ type Item = { year: string; title: string; where?: string; text: string };
 
 export const HOME: Record<Lang, {
   eyebrow: string;
+  stamp: string;
   title: string;
   lede: string;
   about: { title: string; body: string[] };
@@ -13,7 +14,8 @@ export const HOME: Record<Lang, {
 }> = {
   es: {
     eyebrow: 'Arte relacional · educación · territorio',
-    title: 'El arte no es patrimonio de quienes se llaman artistas',
+    stamp: 'Recortes de vida',
+    title: 'El arte no es patrimonio exclusivo de quienes se denominan *artistas*',
     lede: 'Soy Juan Alberto González, graduado en Bellas Artes por la Universidad de La Laguna. Vivo en Fasnia (Tenerife) y trabajo entre la práctica artística, la mediación cultural y la educación ambiental.',
     about: {
       title: 'Sobre mí',
@@ -48,7 +50,8 @@ export const HOME: Record<Lang, {
   },
   en: {
     eyebrow: 'Relational art · education · territory',
-    title: 'Art does not belong only to those who call themselves artists',
+    stamp: 'Life cut-outs',
+    title: 'Art is not the exclusive property of those who call themselves *artists*',
     lede: 'I am Juan Alberto González, a Fine Arts graduate from the University of La Laguna. I live in Fasnia (Tenerife) and work across art practice, cultural mediation and environmental education.',
     about: {
       title: 'About',

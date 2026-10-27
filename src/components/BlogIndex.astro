@@ -9,7 +9,7 @@ const t = UI[lang];
 const posts = await getPosts(lang);
 ---
 <Base lang={lang} title={t.blogTitle} description={t.blogIntro} current="blog" alternate={UI[t.other.lang].blog}>
-  <h1>{t.blogTitle}</h1>
+  <h1 class="ink">{t.blogTitle}</h1>
   <p class="lede">{t.blogIntro} <a href={t.rss}>RSS</a></p>
   {posts.length === 0 ? <p class="meta">{t.noPosts}</p> : (
     <ul class="posts">
