@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE, UI, type Lang } from '../site';
+import { getPosts, slugOf, formatDate } from '../posts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = UI[lang];
+const latest = (await getPosts(lang)).slice(0, 3);
+const es = lang === 'es';
+const csa2 = SITE.csa2 ? `<a href="${SITE.csa2}">CSA2</a>` : 'CSA2';
+---
+<Base lang={lang} current="home">
+  <p class="eyebrow">#WandererBeyondBiopolitics</p>
+  <h1>{es ? 'Exploración de márgenes invisibles' : 'Explorer of invisible margins'}</h1>
+  <p class="lede">{t.description}</p>
+  <p>
+    {es
+      ? 'También colaboro en ecosistemas digitales éticos y redes culturales federadas.'
+      : 'I also contribute to ethical digital ecosystems and federated cultural networks.'}
+  </p>
+
+  <h2>{es ? 'Sobre mí' : 'About'}</h2>
+  <p>
+    {es
+      ? 'Vivo y trabajo en Canarias. Mi práctica es antiextractivista, anticolonial y antivigilancia, y presta atención al trabajo infravalorado y a las economías de servicios de las que dependen los territorios turistificados.'
+      : 'I live and work in the Canary Islands. My practice is anti-extractivist, anti-colonial and anti-surveillance, paying attention to undervalued labour and to the service economies that touristified territories depend on.'}
+  </p>
+
+  <h2>{es ? 'Comisariando CSA2' : 'Curating CSA2'}</h2>
+  <p>
+    <Fragment set:html={es
+      ? `${csa2} es un proyecto de documentación sobre la turistificación y el extractivismo en Canarias, construido junto a comunidades locales, activistas y redes europeas.`
+      : `${csa2} is a documentation project on overtourism and extraction in the Canary Islands, built together with local communities, activists and European networks.`} />
+  </p>
+
+  <h2>{es ? 'Ecosistemas digitales y pensamiento decolonial' : 'Digital ecosystems and decolonial thought'}</h2>
+  <p>
+    {es
+      ? 'Defiendo prácticas digitales éticas e inclusivas que cuestionen las estructuras de poder existentes: herramientas libres, redes federadas y comunidades que controlan sus propios datos.'
+      : 'I argue for ethical, inclusive digital practices that challenge existing power structures: free tools, federated networks and communities that own their data.'}
+  </p>
+
+  <h2>{t.latest}</h2>
+  {latest.length === 0 ? <p class="meta">{t.noPosts}</p> : (
+    <ul class="posts">
+      {latest.map((p) => (
+        <li>
+          <a class="title" href={`${t.blog}${slugOf(p.id)}/`}>{p.data.title}</a>
+          <div class="meta"><time datetime={p.data.date.toISOString()}>{formatDate(p.data.date, t.dateLocale)}</time></div>
+          <p>{p.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  )}
+  <p><a href={t.blog}>{t.allPosts} →</a></p>
+
+  <h2 id="contacto">{es ? 'Contacto y colaboraciones' : 'Get in touch'}</h2>
+  <div class="card">
+    <p>
+      {es
+        ? 'Si quieres colaborar o simplemente conversar, escríbeme.'
+        : 'If you would like to collaborate or simply talk, write to me.'}
+    </p>
+    <p>
+      Mastodon: <a href={SITE.mastodon} rel="me">{SITE.mastodonHandle}</a>
+      {SITE.email && <><br />Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a></>}
+    </p>
+  </div>
+</Base>

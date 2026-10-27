@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+import { SITE, UI, type Lang } from '../site';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  // Enlace a esta misma página en el otro idioma, si existe.
+  alternate?: string;
+  current?: 'home' | 'blog';
+}
+
+const { lang, title, description, alternate, current } = Astro.props;
+const t = UI[lang];
+const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${t.tagline}`;
+const desc = description ?? t.description;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const otherHref = alternate ?? t.other.href;
+---
+<!doctype html>
+<html lang={t.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" hreflang={t.other.lang} href={new URL(otherHref, Astro.site)} />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} · ${t.blogTitle}`} href={t.rss} />
+    <link rel="me" href={SITE.mastodon} />
+    <meta name="fediverse:creator" content={SITE.mastodonHandle} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_GB'} />
+    <meta name="theme-color" content="#f6f1e7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1b1917" media="(prefers-color-scheme: dark)" />
+  </head>
+  <body>
+    <a class="skip" href="#main">{lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}</a>
+    <header class="site">
+      <div class="wrap">
+        <a class="brand" href={t.home}>{SITE.name}</a>
+        <nav aria-label={lang === 'es' ? 'Principal' : 'Main'}>
+          <a href={t.home} aria-current={current === 'home' ? 'page' : undefined}>{t.nav.home}</a>
+          <a href={t.blog} aria-current={current === 'blog' ? 'page' : undefined}>{t.nav.blog}</a>
+          <a href={`${t.home}#contacto`}>{t.nav.contact}</a>
+          <a href={SITE.mastodon} rel="me">Mastodon</a>
+          <a href={otherHref} hreflang={t.other.lang} lang={t.other.lang}>{t.other.label}</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main" class="wrap">
+      <slot />
+    </main>
+    <footer class="site">
+      <div class="wrap">
+        <span>
+          © {SITE.name} ·
+          <a href={SITE.license} rel="license">CC BY-NC-SA 4.0</a> ·
+          <a href={SITE.mastodon} rel="me">{SITE.mastodonHandle}</a> ·
+          <a href={t.rss}>RSS</a>
+        </span>
+        <span>{t.privacy}</span>
+      </div>
+    </footer>
+  </body>
+</html>

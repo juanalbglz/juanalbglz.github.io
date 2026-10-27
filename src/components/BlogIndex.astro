@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { UI, type Lang } from '../site';
+import { getPosts, slugOf, formatDate } from '../posts';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = UI[lang];
+const posts = await getPosts(lang);
+---
+<Base lang={lang} title={t.blogTitle} description={t.blogIntro} current="blog" alternate={UI[t.other.lang].blog}>
+  <h1>{t.blogTitle}</h1>
+  <p class="lede">{t.blogIntro} <a href={t.rss}>RSS</a></p>
+  {posts.length === 0 ? <p class="meta">{t.noPosts}</p> : (
+    <ul class="posts">
+      {posts.map((p) => (
+        <li>
+          <a class="title" href={`${t.blog}${slugOf(p.id)}/`}>{p.data.title}</a>
+          <div class="meta">
+            <time datetime={p.data.date.toISOString()}>{formatDate(p.data.date, t.dateLocale)}</time>
+            {p.data.draft && (lang === 'es' ? ' · borrador' : ' · draft')}
+          </div>
+          <p>{p.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  )}
+</Base>
