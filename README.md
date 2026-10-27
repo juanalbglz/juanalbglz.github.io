@@ -24,8 +24,8 @@ Web personal de Juan González, con blog en español e inglés. Sitio estático 
 
 ## Cambiar textos y enlaces
 
-- Enlaces (Mastodon, email de contacto): `src/site.ts`.
-- Textos de la portada: `src/components/Home.astro`.
+- Enlaces (Mastodon) y URL del buzón del formulario: `src/site.ts`. El buzón se instala aparte: ver `servidor/README.md`.
+- Textos de la portada (perfil, trabajos, educación) en los dos idiomas: `src/home.ts`.
 - Colores y tipografía: `src/styles/global.css`.
 
 ## Trabajar en local
