@@ -5,7 +5,7 @@ export const SITE = {
   mastodon: 'https://mastodon.art/@juanalbglz',
   mastodonHandle: '@juanalbglz@mastodon.art',
   // URL del buzón PHP del formulario (ver servidor/README.md). Vacío = sin formulario.
-  contactEndpoint: '',
+  contactEndpoint: 'https://buzon.juanalbglz.eu/contacto.php',
   license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
 };
 
