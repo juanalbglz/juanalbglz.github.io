@@ -7,6 +7,9 @@ export const SITE = {
   // URL del buzón PHP del formulario (ver servidor/README.md). Vacío = sin formulario.
   contactEndpoint: 'https://buzon.juanalbglz.eu/contacto.php',
   license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+  // Otros proyectos enlazados en el menú superior.
+  arthist: 'https://arthist.juanalbglz.eu/',
+  canariasAfrica: 'https://canarias.africa/',
 };
 
 export type Lang = 'es' | 'en';
