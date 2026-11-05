@@ -10,6 +10,7 @@ export const SITE = {
   // Otros proyectos enlazados en el menú superior.
   arthist: 'https://arthist.juanalbglz.eu/',
   canariasAfrica: 'https://canarias.africa/',
+  utopias: 'https://utopias.juanalbglz.eu/',
 };
 
 export type Lang = 'es' | 'en';

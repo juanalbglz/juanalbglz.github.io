@@ -4,6 +4,16 @@ Web personal de Juan González, con blog en español e inglés. Sitio estático 
 
 ## Escribir una entrada
 
+### Con el formulario (recomendado)
+
+1. Entra en [app.pagescms.org](https://app.pagescms.org) con tu cuenta de GitHub y elige el repositorio `juanalbglz.github.io`, rama `main`.
+2. Elige **Blog (español)** o **Blog (inglés)** y pulsa *Add an entry*. Rellena título, resumen, fecha y texto. Las imágenes que subas se guardan en `public/images/blog/`.
+3. Pulsa *Save*. La web se publica sola en un par de minutos. Marca «Borrador» si aún no quieres que se vea.
+
+El formulario está definido en `.pages.yml`. Pages CMS solo se usa para editar: la web publicada no carga nada de terceros.
+
+### A mano
+
 1. Crea un archivo `.md` en `src/content/blog/es/` (español) o `src/content/blog/en/` (inglés). El nombre del archivo es la URL: `mi-entrada.md` → `juanalbglz.eu/blog/mi-entrada/`.
 2. Empieza el archivo con esta cabecera:
 

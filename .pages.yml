@@ -1,0 +1,102 @@
+# Formulario de edición con Pages CMS (https://app.pagescms.org).
+# Entra con tu cuenta de GitHub, elige el repositorio «juanalbglz.github.io» y la rama «main».
+# Cada vez que guardas, Pages CMS hace un commit y la web se vuelve a publicar sola.
+# Al crear una entrada nueva, el nombre del archivo sale del título (por ejemplo «una-web-propia.md»).
+
+media:
+  input: public/images/blog
+  output: /images/blog
+
+content:
+  - name: blog-es
+    label: Blog (español)
+    description: Entradas en español. Se publican en juanalbglz.eu/blog/.
+    type: collection
+    path: src/content/blog/es
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      fields: [title, date, draft]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: description
+        label: Resumen
+        description: Una o dos frases. Sale en la lista del blog, en el RSS y al compartir el enlace.
+        type: text
+        required: true
+      - name: date
+        label: Fecha
+        type: date
+        required: true
+      - name: updated
+        label: Fecha de actualización (opcional)
+        type: date
+      - name: tags
+        label: Etiquetas
+        type: string
+        list: true
+      - name: draft
+        label: Borrador (no se publica)
+        type: boolean
+        default: false
+      - name: translation
+        label: Versión en el otro idioma (opcional)
+        description: Nombre del archivo de la entrada en inglés, sin «.md» (por ejemplo «new-site»).
+        type: string
+      - name: body
+        label: Texto
+        type: rich-text
+  - name: blog-en
+    label: Blog (inglés)
+    description: Entradas en inglés. Se publican en juanalbglz.eu/en/blog/.
+    type: collection
+    path: src/content/blog/en
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      fields: [title, date, draft]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: description
+        label: Resumen
+        description: Una o dos frases. Sale en la lista del blog, en el RSS y al compartir el enlace.
+        type: text
+        required: true
+      - name: date
+        label: Fecha
+        type: date
+        required: true
+      - name: updated
+        label: Fecha de actualización (opcional)
+        type: date
+      - name: tags
+        label: Etiquetas
+        type: string
+        list: true
+      - name: draft
+        label: Borrador (no se publica)
+        type: boolean
+        default: false
+      - name: translation
+        label: Versión en el otro idioma (opcional)
+        description: Nombre del archivo de la entrada en español, sin «.md» (por ejemplo «nueva-web»).
+        type: string
+      - name: body
+        label: Texto
+        type: rich-text
