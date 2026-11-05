@@ -1,6 +1,6 @@
 <?php
-// Buzón del formulario de contacto de juanalbglz.eu.
-// Recibe el formulario, lo reenvía por correo y vuelve a la web. No guarda los mensajes
+// Buzón de los formularios de juanalbglz.eu y sus subdominios (contacto y «Propón otra utopía»).
+// Recibe el formulario, lo reenvía por correo y vuelve a la web de la que vino. No guarda los mensajes
 // ni las IP: solo un resumen cifrado de la IP durante una hora para frenar el spam.
 // Funciona con PHP 7.0 o superior y no necesita extensiones.
 
@@ -11,10 +11,21 @@ if (!is_file($config)) {
 }
 $c = require $config;
 
-function volver($c, $lang, $estado) {
+function volver($web, $lang, $estado) {
   $ruta = $lang === 'en' ? '/en/thanks/' : '/gracias/';
-  header('Location: ' . $c['web'] . $ruta . ($estado === 'ok' ? '' : '?error=' . $estado), true, 303);
+  header('Location: ' . $web . $ruta . ($estado === 'ok' ? '' : '?error=' . $estado), true, 303);
   exit;
+}
+
+// Esquema y dominio de una dirección («https://utopias.juanalbglz.eu»), o '' si no es válida.
+function origen_de($url) {
+  $p = parse_url($url);
+  if (!$p || empty($p['scheme']) || empty($p['host'])) return '';
+  return strtolower($p['scheme'] . '://' . $p['host'] . (isset($p['port']) ? ':' . $p['port'] : ''));
+}
+
+function campo($nombre) {
+  return trim(isset($_POST[$nombre]) ? (string) $_POST[$nombre] : '');
 }
 
 function largo($s) {
@@ -28,19 +39,35 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $lang = (isset($_POST['lang']) && $_POST['lang'] === 'en') ? 'en' : 'es';
 
-// Solo se aceptan envíos desde la propia web.
-$origen = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
-if (strpos($origen, $c['web']) !== 0) volver($c, $lang, 'origen');
+// Solo se aceptan envíos desde las webs de la configuración ('web' puede ser una o una lista;
+// la primera es a la que se vuelve si el origen no es válido).
+$webs = array_map('origen_de', (array) $c['web']);
+$origen = origen_de(isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : ''));
+if ($origen === '' || !in_array($origen, $webs, true)) volver($webs[0], $lang, 'origen');
+$web = $origen;
 
 // Trampa para bots: un campo oculto que una persona deja vacío.
-if (!empty($_POST['web'])) volver($c, $lang, 'ok');
+if (!empty($_POST['web'])) volver($web, $lang, 'ok');
 
-$nombre = trim(isset($_POST['nombre']) ? (string) $_POST['nombre'] : '');
-$correo = trim(isset($_POST['correo']) ? (string) $_POST['correo'] : '');
-$mensaje = trim(isset($_POST['mensaje']) ? (string) $_POST['mensaje'] : '');
-if ($nombre === '' || $mensaje === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)) volver($c, $lang, 'datos');
-if (largo($nombre) > 100 || largo($correo) > 200 || largo($mensaje) > 5000) volver($c, $lang, 'datos');
+$nombre = campo('nombre');
+$correo = campo('correo');
+$mensaje = campo('mensaje');
+if ($nombre === '' || $mensaje === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)) volver($web, $lang, 'datos');
+if (largo($nombre) > 100 || largo($correo) > 200 || largo($mensaje) > 5000) volver($web, $lang, 'datos');
 $nombre = preg_replace('/[\r\n]+/', ' ', $nombre);
+
+// «Propón otra utopía» (utopias.juanalbglz.eu) manda además estos campos.
+$utopia = campo('tipo') === 'utopia';
+if ($utopia) {
+  $titulo = preg_replace('/[\r\n]+/', ' ', campo('titulo'));
+  $fechas = campo('fechas');
+  $lugar = campo('lugar');
+  $categoria = campo('categoria');
+  $enlace = campo('enlace');
+  if ($titulo === '' || $fechas === '' || $lugar === '') volver($web, $lang, 'datos');
+  if (largo($titulo) > 200 || largo($fechas) > 100 || largo($lugar) > 200 || largo($categoria) > 100 || largo($enlace) > 500) volver($web, $lang, 'datos');
+  if ($enlace !== '' && !preg_match('#^https?://#i', $enlace)) volver($web, $lang, 'datos');
+}
 
 // Como mucho N envíos por hora desde la misma IP. Se guarda junto al script,
 // en una carpeta que el .htaccess protege; si no se puede escribir, se omite el límite.
@@ -51,12 +78,21 @@ if (is_dir($dir) && is_writable($dir)) {
   foreach ((array) glob("$dir/*") as $f) if (@filemtime($f) < time() - 3600) @unlink($f);
   $huella = "$dir/" . hash_hmac('sha256', isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '', $c['secreto']);
   $envios = is_file($huella) ? (int) @file_get_contents($huella) : 0;
-  if ($envios >= $c['max_por_hora']) volver($c, $lang, 'limite');
+  if ($envios >= $c['max_por_hora']) volver($web, $lang, 'limite');
   @file_put_contents($huella, (string) ($envios + 1));
 }
 
-$asunto = '=?UTF-8?B?' . base64_encode("[juanalbglz.eu] Mensaje de $nombre") . '?=';
-$cuerpo = "Nombre: $nombre\nCorreo: $correo\nIdioma: $lang\n\n$mensaje\n";
+$sitio = parse_url($web, PHP_URL_HOST);
+if ($utopia) {
+  $asunto = '=?UTF-8?B?' . base64_encode("[$sitio] Propuesta: $titulo") . '?=';
+  $cuerpo = "Propuesta para el mapa de utopías y revoluciones\n\n"
+    . "Qué: $titulo\nCuándo: $fechas\nDónde: $lugar\nTipo: $categoria\n"
+    . ($enlace !== '' ? "Enlace: $enlace\n" : '')
+    . "\n$mensaje\n\n—\nDe: $nombre <$correo>\n";
+} else {
+  $asunto = '=?UTF-8?B?' . base64_encode("[$sitio] Mensaje de $nombre") . '?=';
+  $cuerpo = "Nombre: $nombre\nCorreo: $correo\nIdioma: $lang\nWeb: $web\n\n$mensaje\n";
+}
 $cabeceras = implode("\r\n", array(
   'From: ' . $c['remitente'],
   'Reply-To: ' . $correo,
@@ -69,7 +105,7 @@ $cabeceras = implode("\r\n", array(
 $enviado = !empty($c['smtp']['servidor'])
   ? enviar_smtp($c['smtp'], $c['remitente'], $c['destino'], $correo, $asunto, $cuerpo)
   : @mail($c['destino'], $asunto, $cuerpo, $cabeceras);
-volver($c, $lang, $enviado ? 'ok' : 'envio');
+volver($web, $lang, $enviado ? 'ok' : 'envio');
 
 // Cliente SMTP mínimo: SSL (puerto 465) o STARTTLS (587) y AUTH LOGIN.
 function enviar_smtp($s, $de, $para, $responder, $asunto, $cuerpo) {

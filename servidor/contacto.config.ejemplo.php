@@ -2,7 +2,8 @@
 // Copia este archivo como contacto.config.php (con .php al final) en el hosting y rellénalo.
 // contacto.config.php no se sube nunca al repositorio.
 return [
-  'web' => 'https://juanalbglz.eu',
+  // Webs desde las que se aceptan envíos. La primera es la principal.
+  'web' => ['https://juanalbglz.eu', 'https://utopias.juanalbglz.eu'],
   'destino' => 'tu-correo@ejemplo.org',          // a dónde llegan los mensajes (no se publica)
   'remitente' => 'buzon@tudominio.org',          // debe ser la misma cuenta que 'usuario' de SMTP
   'secreto' => 'cambia-esto-por-una-frase-larga',

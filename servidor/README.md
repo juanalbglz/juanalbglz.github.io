@@ -14,6 +14,15 @@ Requisitos: PHP 7.0 o superior. Recomendado: rellenar el bloque `smtp` con un bu
 
 ## Qué hace
 
-- Solo acepta envíos que vengan de `https://juanalbglz.eu`.
+- Solo acepta envíos que vengan de las webs de `'web'` en la configuración (`https://juanalbglz.eu` y `https://utopias.juanalbglz.eu`) y, al terminar, vuelve a la página de gracias de la web de la que vino.
+- Sirve también para el formulario «Propón otra utopía» de utopias.juanalbglz.eu (campo `tipo=utopia`): el correo llega con el asunto «Propuesta: …» y los datos de la propuesta ordenados.
 - Tiene un campo trampa invisible para bots y un límite de envíos por hora y por IP.
 - No guarda los mensajes ni las IP: reenvía cada mensaje por correo y vuelve a la página de gracias.
+
+## Actualizar a la versión con varias webs
+
+1. Sube el `contacto.php` nuevo al hosting, sustituyendo al anterior.
+2. En `contacto.config.php`, cambia la línea `'web'` por:
+   `'web' => ['https://juanalbglz.eu', 'https://utopias.juanalbglz.eu'],`
+
+Con la configuración antigua (`'web' => 'https://juanalbglz.eu'`) sigue funcionando igual que antes, solo para juanalbglz.eu.
