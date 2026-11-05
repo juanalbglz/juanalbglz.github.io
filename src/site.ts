@@ -9,6 +9,7 @@ export const SITE = {
   license: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
   // Otros proyectos enlazados en el menú superior.
   arthist: 'https://arthist.juanalbglz.eu/',
+  utopias: 'https://utopias.juanalbglz.eu/',
   canariasAfrica: 'https://canarias.africa/',
 };
 
